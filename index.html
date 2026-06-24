@@ -1,0 +1,466 @@
+ <!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Disney Watchlist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FFF6E9;
+    --pink:#FF7AA2;
+    --pink-soft:#FFD9E4;
+    --blue:#7AC7FF;
+    --blue-soft:#D9F0FF;
+    --yellow:#FFD166;
+    --purple:#B79CFF;
+    --ink:#3A2E39;
+    --green:#7BD9A0;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Quicksand',sans-serif;
+    background: radial-gradient(circle at 10% 10%, #FFE9F2 0%, var(--cream) 45%, #FFF1D6 100%);
+    color:var(--ink);
+    padding:32px 16px 80px;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  .wrap{max-width:900px;margin:0 auto;}
+
+  /* HERO */
+  .hero{
+    text-align:center;
+    margin-bottom:36px;
+    position:relative;
+  }
+  .hero .stars{
+    font-size:22px;
+    letter-spacing:8px;
+    color:var(--yellow);
+    text-shadow:0 2px 0 rgba(0,0,0,0.08);
+  }
+  .hero h1{
+    font-family:'Baloo 2',sans-serif;
+    font-weight:800;
+    font-size:clamp(34px,7vw,56px);
+    margin:6px 0 4px;
+    color:var(--pink);
+    text-shadow: 3px 3px 0 #fff, 6px 6px 0 rgba(58,46,57,0.12);
+    letter-spacing:1px;
+  }
+  .hero p{
+    font-size:16px;
+    font-weight:600;
+    color:#7a6a78;
+    margin:0;
+  }
+
+  /* PROGRESS */
+  .progress-card{
+    background:#fff;
+    border-radius:24px;
+    padding:16px 22px;
+    margin:0 auto 36px;
+    max-width:480px;
+    box-shadow:0 10px 0 -4px #fff, 0 14px 24px rgba(255,122,162,0.18);
+    border:3px solid var(--pink-soft);
+  }
+  .progress-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:8px;
+    font-family:'Baloo 2',sans-serif;
+  }
+  .progress-top .label{font-weight:700;color:var(--pink);font-size:15px;}
+  .progress-top .count{font-weight:700;color:var(--ink);font-size:15px;}
+  .bar-track{
+    height:16px;
+    border-radius:20px;
+    background:var(--pink-soft);
+    overflow:hidden;
+    position:relative;
+  }
+  .bar-fill{
+    height:100%;
+    border-radius:20px;
+    background:linear-gradient(90deg,var(--yellow),var(--pink));
+    width:0%;
+    transition:width .5s ease;
+  }
+
+  /* ERA SECTION */
+  .era{
+    margin-bottom:34px;
+    border-radius:28px;
+    padding:22px 20px 26px;
+    position:relative;
+    border:3px solid rgba(58,46,57,0.14);
+    overflow:hidden;
+  }
+  .era-1{background:#FFE3ED;}
+  .era-2{background:#E2F2FF;}
+  .era-3{background:#FFF3D6;}
+  .era-4{background:#E8E1FF;}
+  .era-5{background:#DDF6E6;}
+  .era-6{background:#FFE6D1;}
+
+  .era-head{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:6px;
+  }
+  .era-badge{
+    font-family:'Baloo 2',sans-serif;
+    font-weight:800;
+    font-size:13px;
+    color:#fff;
+    padding:5px 14px;
+    border-radius:999px;
+    box-shadow:0 3px 0 rgba(0,0,0,0.12);
+    white-space:nowrap;
+  }
+  .era-1 .era-badge{background:var(--pink);}
+  .era-2 .era-badge{background:var(--blue);}
+  .era-3 .era-badge{background:#F2A93B;}
+  .era-4 .era-badge{background:var(--purple);}
+  .era-5 .era-badge{background:var(--green);}
+  .era-6 .era-badge{background:#FF8A4C;}
+
+  .era-head h2{
+    font-family:'Baloo 2',sans-serif;
+    font-size:22px;
+    margin:0;
+    color:var(--ink);
+  }
+  .era-years{
+    font-size:13px;
+    font-weight:600;
+    color:#7a6a78;
+    margin:0 0 16px 2px;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:12px;
+    align-items:stretch;
+    width:100%;
+  }
+
+  .item{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    background:rgba(255,255,255,0.85);
+    border-radius:16px;
+    padding:10px 12px;
+    cursor:pointer;
+    user-select:none;
+    border:2px solid transparent;
+    transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease, background .15s ease;
+    box-shadow:0 3px 0 rgba(58,46,57,0.08);
+    min-height:50px;
+    min-width:0;
+  }
+  .item:hover{
+    transform:translateY(-2px);
+    border-color:rgba(255,122,162,0.4);
+  }
+  .item.checked{
+    background:#fff;
+    border-color:var(--green);
+  }
+  .item.checked .title{
+    text-decoration:line-through;
+    color:#9a9098;
+  }
+
+  .check{
+    flex:0 0 26px;
+    width:26px;
+    height:26px;
+    margin-top:1px;
+    border-radius:50%;
+    border:2.5px solid #d8cfd6;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:14px;
+    background:#fff;
+    transition:all .15s ease;
+  }
+  .item.checked .check{
+    background:var(--green);
+    border-color:var(--green);
+    color:#fff;
+    transform:scale(1.08);
+  }
+
+  .title{
+    font-size:14px;
+    font-weight:600;
+    line-height:1.3;
+    flex:1 1 auto;
+    padding-top:2px;
+    min-width:0;
+    overflow-wrap:break-word;
+  }
+  .year{
+    font-size:11px;
+    font-weight:600;
+    color:#a89aa6;
+    flex-shrink:0;
+    padding-top:3px;
+    white-space:nowrap;
+  }
+
+  .studio-divider{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin:44px 0 22px;
+  }
+  .studio-divider .line{
+    flex:1;
+    height:3px;
+    border-radius:3px;
+    background:rgba(58,46,57,0.15);
+  }
+  .studio-divider h3{
+    font-family:'Baloo 2',sans-serif;
+    font-size:24px;
+    margin:0;
+    white-space:nowrap;
+    color:var(--ink);
+  }
+  .studio-divider.disney h3{color:var(--pink);}
+  .studio-divider.pixar h3{color:#2F8FE0;}
+
+  .era-7{background:#DCEEFF;}
+  .era-8{background:#FFE0CF;}
+  .era-9{background:#E4F4D9;}
+  .era-7 .era-badge{background:#2F8FE0;}
+  .era-8 .era-badge{background:#FF6B57;}
+  .era-9 .era-badge{background:#56B24B;}
+
+  footer{
+    text-align:center;
+    font-size:12px;
+    color:#a89aa6;
+    margin-top:30px;
+    font-weight:600;
+  }
+
+  @media (max-width:480px){
+    .grid{grid-template-columns:1fr 1fr;}
+    .era-head h2{font-size:19px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="stars">✦ ⋆ ✦ ⋆ ✦</div>
+    <h1>Disney Watchlist</h1>
+    <p>отмечай любимые мультфильмы по эпохам ✨</p>
+  </div>
+
+  <div class="progress-card">
+    <div class="progress-top">
+      <span class="label">МОЙ ПРОГРЕСС</span>
+      <span class="count"><span id="checkedCount">0</span> / <span id="totalCount">0</span></span>
+    </div>
+    <div class="bar-track"><div class="bar-fill" id="barFill"></div></div>
+  </div>
+
+  <div class="studio-divider disney"><span class="line"></span><h3>🏰 Walt Disney Animation</h3><span class="line"></span></div>
+  <div id="eras"></div>
+
+  <div class="studio-divider pixar"><span class="line"></span><h3>💡 Pixar Animation</h3><span class="line"></span></div>
+  <div id="erasPixar"></div>
+
+  <footer>сделано с любовью к мультяшкам 🎀🍿</footer>
+</div>
+
+<script>
+const data = [
+  {
+    name: "Золотая эра", years: "1937 – 1942", cls: "era-1",
+    movies: [
+      ["Белоснежка и семь гномов","1937"],
+      ["Пиноккио","1940"],
+      ["Фантазия","1940"],
+      ["Дамбо","1941"],
+      ["Бэмби","1942"]
+    ]
+  },
+  {
+    name: "Серебряная эра", years: "1950 – 1959", cls: "era-2",
+    movies: [
+      ["Золушка","1950"],
+      ["Алиса в Стране чудес","1951"],
+      ["Питер Пэн","1953"],
+      ["Леди и Бродяга","1955"],
+      ["Спящая красавица","1959"]
+    ]
+  },
+  {
+    name: "Бронзовая эра", years: "1961 – 1988", cls: "era-3",
+    movies: [
+      ["101 далматинец","1961"],
+      ["Меч в камне","1963"],
+      ["Книга джунглей","1967"],
+      ["Коты-аристократы","1970"],
+      ["Робин Гуд","1973"],
+      ["Лис и пёс","1981"],
+      ["Великий мышиный детектив","1986"],
+      ["Оливер и компания","1988"]
+    ]
+  },
+  {
+    name: "Возрождение", years: "1989 – 1999", cls: "era-4",
+    movies: [
+      ["Русалочка","1989"],
+      ["Красавица и чудовище","1991"],
+      ["Аладдин","1992"],
+      ["Король Лев","1994"],
+      ["Покахонтас","1995"],
+      ["Горбун из Нотр-Дама","1996"],
+      ["Геркулес","1997"],
+      ["Мулан","1998"],
+      ["Тарзан","1999"]
+    ]
+  },
+  {
+    name: "Постренессанс", years: "2000 – 2009", cls: "era-5",
+    movies: [
+      ["Фантазия 2000","2000"],
+      ["Лило и Стич","2002"],
+      ["Планета сокровищ","2002"],
+      ["Братец медвежонок","2003"],
+      ["Дом вверх дном", "2004"],
+      ["Принцесса и лягушка","2009"]
+    ]
+  },
+  {
+    name: "Эра возрождения 2.0", years: "2010 – наши дни", cls: "era-6",
+    movies: [
+      ["Рапунцель: Запутанная история","2010"],
+      ["Холодное сердце","2013"],
+      ["Город героев","2014"],
+      ["Зверополис","2016"],
+      ["Моана","2016"],
+      ["Холодное сердце 2","2019"],
+      ["Райя и последний дракон","2021"],
+      ["Энканто","2021"],
+      ["Желание","2023"]
+    ]
+  }
+];
+
+const dataPixar = [
+  {
+    name: "Ранний Pixar", years: "1995 – 2003", cls: "era-7",
+    movies: [
+      ["История игрушек","1995"],
+      ["Приключения Флика","1998"],
+      ["История игрушек 2","1999"],
+      ["Корпорация монстров","2001"],
+      ["В поисках Немо","2003"]
+    ]
+  },
+  {
+    name: "Золотой Pixar", years: "2004 – 2015", cls: "era-8",
+    movies: [
+      ["Суперсемейка","2004"],
+      ["Тачки","2006"],
+      ["Рататуй","2007"],
+      ["ВАЛЛ-И","2008"],
+      ["Вверх","2009"],
+      ["История игрушек 3","2010"],
+      ["Тачки 2","2011"],
+      ["Храброе сердце","2012"],
+      ["Университет монстров","2013"],
+      ["Головоломка","2015"],
+      ["Хороший динозавр","2015"]
+    ]
+  },
+  {
+    name: "Современный Pixar", years: "2016 – наши дни", cls: "era-9",
+    movies: [
+      ["В поисках Дори","2016"],
+      ["Тачки 3","2017"],
+      ["Тайна Коко","2017"],
+      ["Суперсемейка 2","2018"],
+      ["История игрушек 4","2019"],
+      ["Вперёд","2020"],
+      ["Душа","2020"],
+      ["Лука","2021"],
+      ["Я краснею","2022"],
+      ["Базз Лайтер","2022"],
+      ["Элементарно","2023"],
+      ["Головоломка 2","2024"]
+    ]
+  }
+];
+
+const erasEl = document.getElementById('eras');
+const erasPixarEl = document.getElementById('erasPixar');
+let total = 0;
+
+function renderGroup(container, list, offset){
+  list.forEach((era, i) => {
+    const eIdx = offset + i;
+    total += era.movies.length;
+    const section = document.createElement('section');
+    section.className = era ${era.cls};
+    section.innerHTML = `
+      <div class="era-head">
+        <span class="era-badge">ЭРА ${eIdx+1}</span>
+        <h2>${era.name}</h2>
+      </div>
+      <p class="era-years">${era.years}</p>
+      <div class="grid">
+        ${era.movies.map((m,i)=>`
+          <div class="item" data-id="${eIdx}-${i}">
+            <span class="check">✓</span>
+            <span class="title">${m[0]}</span>
+            <span class="year">${m[1]}</span>
+          </div>
+        `).join('')}
+      </div>
+    `;
+    container.appendChild(section);
+  });
+}
+
+renderGroup(erasEl, data, 0);
+renderGroup(erasPixarEl, dataPixar, data.length);
+
+document.getElementById('totalCount').textContent = total;
+
+function updateProgress(){
+  const checked = document.querySelectorAll('.item.checked').length;
+  document.getElementById('checkedCount').textContent = checked;
+  document.getElementById('barFill').style.width = (checked/total*100) + '%';
+}
+
+document.getElementById('eras').addEventListener('click', handleClick);
+document.getElementById('erasPixar').addEventListener('click', handleClick);
+
+function handleClick(e){
+  const item = e.target.closest('.item');
+  if(!item) return;
+  item.classList.toggle('checked');
+  updateProgress();
+}
+
+updateProgress();
+</script>
+</body>
+</html>
