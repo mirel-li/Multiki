@@ -444,6 +444,23 @@ renderGroup(erasPixarEl, dataPixar, data.length);
 
 document.getElementById('totalCount').textContent = total;
 
+const STORAGE_KEY = 'disneyChecklistChecked';
+
+function loadChecked(){
+  try{
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    saved.forEach(id => {
+      const el = document.querySelector(`.item[data-id="${id}"]`);
+      if(el) el.classList.add('checked');
+    });
+  }catch(e){}
+}
+
+function saveChecked(){
+  const ids = Array.from(document.querySelectorAll('.item.checked')).map(el => el.dataset.id);
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(ids)); }catch(e){}
+}
+
 function updateProgress(){
   const checked = document.querySelectorAll('.item.checked').length;
   document.getElementById('checkedCount').textContent = checked;
@@ -458,8 +475,10 @@ function handleClick(e){
   if(!item) return;
   item.classList.toggle('checked');
   updateProgress();
+  saveChecked();
 }
 
+loadChecked();
 updateProgress();
 </script>
 </body>
